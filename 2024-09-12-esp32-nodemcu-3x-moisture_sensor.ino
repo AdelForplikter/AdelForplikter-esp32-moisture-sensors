@@ -1,8 +1,6 @@
 #include <Arduino.h>
 #include <WiFi.h>
 #include <WiFiClientSecure.h>
-#include <credentials.h>
-
 
 const char* rootCACertificate = "-----BEGIN CERTIFICATE-----\n"
                                 "MIIFazCCA1OgAwIBAgIRAIIQz7DSQONZRGPgu2OCiwAwDQYJKoZIhvcNAQELBQAw\n"
