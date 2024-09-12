@@ -44,6 +44,7 @@ const char* endpoint = "/api/sensors";
 const char* tokenauth = "Authorization:authtoken";  //Token authorization header
 // Semi sensitive - END
 
+
 // GPIO PINS
 //We can not use ADC on any of the ADC2 channels while
 //WiFi is on: Excluded pins:GPIO4, GPIO0, GPIO2, GPIO15,
