@@ -53,7 +53,7 @@ const char* tokenauth = "Authorization:authtoken";  //Token authorization header
 const int moistureSensor01 = 36;  // GPIO for Sensor 01
 const int moistureSensor02 = 39;  // GPIO for Sensor 02
 const int moistureSensor03 = 34;  // GPIO for Sensor 03
-int readFrequency = 60;           // seconds between readings
+int readFrequency = 15;           // seconds between readings
 
 String jsonString;
 String shortName;
@@ -82,9 +82,47 @@ void setup() {
   pinMode(moistureSensor03, INPUT);
 }
 void loop() {
-  int moistureReading01 = analogRead(moistureSensor01);
-  int moistureReading02 = analogRead(moistureSensor02);
-  int moistureReading03 = analogRead(moistureSensor03);
+
+  // shitty 1 read.
+  // int moistureReading01 = analogRead(moistureSensor01);
+  // int moistureReading02 = analogRead(moistureSensor02);
+  // int moistureReading03 = analogRead(moistureSensor03);
+
+  // Switch to 200 readings over 5 seconds and average instead. ohh, and remove top 20 and bottom 20 first
+  int moisture01[201];
+  int moisture02[201];
+  int moisture03[201];
+  for (int i = 0; i < 200; i++) {
+    moisture01[i] = analogRead(moistureSensor01);
+    moisture02[i] = analogRead(moistureSensor02);
+    moisture03[i] = analogRead(moistureSensor03);
+    delay(25);
+  }
+
+  // Sort to shave polarization
+  int lt_length = sizeof(moisture01) / sizeof(moisture01[0]);
+  qsort(moisture01, lt_length, sizeof(moisture01[0]), sort_desc);
+  lt_length = sizeof(moisture02) / sizeof(moisture02[0]);
+  qsort(moisture02, lt_length, sizeof(moisture02[0]), sort_desc);
+  lt_length = sizeof(moisture03) / sizeof(moisture03[0]);
+  qsort(moisture03, lt_length, sizeof(moisture03[0]), sort_desc);
+
+  long moistureReading01 = 0;
+  long moistureReading02 = 0;
+  long moistureReading03 = 0;
+
+  for (int j = 20; j < 180; j++) {
+    moistureReading01 += moisture01[j];
+    moistureReading02 += moisture02[j];
+    moistureReading03 += moisture03[j];
+  }
+  moistureReading01 = moistureReading01 / 160;
+  moistureReading02 = moistureReading02 / 160;
+  moistureReading03 = moistureReading03 / 160;
+
+
+  // 200 readings end
+
   for (int i = 0; i <= 2; i++) {
     if (i == 0) {
       shortName = "soil01";
@@ -245,4 +283,14 @@ void loop() {
   Serial.print(readFrequency);
   Serial.println("s before next reading/posting");
   delay(readFrequency * 1000);  // Blocking for now. If microcontroller is used for something else, make it non blocking
+}
+
+int sort_desc(const void* cmp1, const void* cmp2) {
+  // Need to cast the void * to int *
+  int a = *((int*)cmp1);
+  int b = *((int*)cmp2);
+  // The comparison
+  // return a > b ? -1 : (a < b ? 1 : 0);
+  // A simpler, probably faster way:
+  return b - a;
 }
