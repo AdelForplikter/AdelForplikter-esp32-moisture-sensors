@@ -54,6 +54,10 @@ const char* endpoint = "/api/sensors";
 const char* tokenauth = "Authorization:authtoken";  //Token authorization header
 // Semi sensitive - END
 
+String shortName = "soil04";
+String longName = "Soil Moisture Sensor 04 Stue";
+String groupID = "Soilsensors";
+
 // GPIO PINS
 //We can not use ADC on any of the ADC2 channels while
 //WiFi is on: Excluded pins:GPIO4, GPIO0, GPIO2, GPIO15,
@@ -64,9 +68,6 @@ const char* tokenauth = "Authorization:authtoken";  //Token authorization header
 const int moistureSensor01 = 36;
 int readFrequency = 0;  // seconds between readings. Using deep sleep now instead
 String jsonString;
-String shortName = "soil04";
-String longName = "Soil Moisture Sensor 04 Stue";
-String groupID = "Soilsensors";
 
 bool displayUpdate = false;
 
